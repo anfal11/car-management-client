@@ -1,82 +1,94 @@
-import { createContext, useEffect, useState } from "react";
-import { FacebookAuthProvider, GoogleAuthProvider, createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
-import app from "../Firebase/firebase.config";
-import axios from "axios";
+import { createContext, useEffect, useState } from 'react'
+import {
+    FacebookAuthProvider,
+    GoogleAuthProvider,
+    createUserWithEmailAndPassword,
+    getAuth,
+    onAuthStateChanged,
+    signInWithEmailAndPassword,
+    signInWithPopup,
+    signOut,
+    updateProfile,
+} from 'firebase/auth'
+import app from '../Firebase/firebase.config'
+import axios from 'axios'
 
-export const AuthContext = createContext();
+export const AuthContext = createContext()
 const auth = getAuth(app)
 
-const AuthProvider = ({children}) => {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null)
+    const [loading, setLoading] = useState(true)
 
     // create user with email
     const createUser = (email, password) => {
-        setLoading(true);
+        setLoading(true)
         return createUserWithEmailAndPassword(auth, email, password)
     }
 
-    // signin user with email
+    // sign in user with email
     const signInWithEmail = (email, password) => {
-        setLoading(true);
+        setLoading(true)
         return signInWithEmailAndPassword(auth, email, password)
     }
 
-    // signin with facebook
+    // sign in with facebook
 
-    const provider = new FacebookAuthProvider();
+    const provider = new FacebookAuthProvider()
     const signInFacebook = () => {
-        setLoading(true);
+        setLoading(true)
         return signInWithPopup(auth, provider)
     }
 
-    const googleProvider = new GoogleAuthProvider();
+    const googleProvider = new GoogleAuthProvider()
 
     const signInWithGoogle = () => {
-      setLoading(true);
-      return signInWithPopup(auth, googleProvider);
-    };
+        setLoading(true)
+        return signInWithPopup(auth, googleProvider)
+    }
 
-    useEffect( () => {
-        const unSubscribe = onAuthStateChanged(auth, currentUser => {
-            const userEmail = currentUser?.email || user?.email;
-            const loggedEmail = {email: userEmail};
-            setUser(currentUser);
-            console.log("Current user: ", currentUser);
-            setLoading(false);
+    useEffect(() => {
+        const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
+            const loggedEmail = { email: currentUser?.email }
+            setUser(currentUser)
+            setLoading(false)
+
             // if user exist then issue a token
-            if(currentUser) {
-                
-                axios.post('http://localhost:5000/jwt' , loggedEmail, {withCredentials: true})
-                .then((res) => {
-                    console.log('token response:', res.data);
-                })
+            if (currentUser) {
+                axios
+                    .post('http://localhost:5000/jwt', loggedEmail, {
+                        withCredentials: true,
+                    })
+                    .then((res) => {
+                        console.log('token response:', res.data)
+                    })
+            } else {
+                axios
+                    .post('http://localhost:5000/logout', loggedEmail, {
+                        withCredentials: true,
+                    })
+                    .then((res) => {
+                        console.log('logout response:', res.data)
+                    })
             }
-            else{
-                axios.post('http://localhost:5000/logout', loggedEmail, {withCredentials: true})
-                .then((res) => {
-                    console.log('logout response:', res.data);
-                })
-            }
-        }) 
-            return () => {
-                return unSubscribe();
-            }
+        })
+        return () => {
+            return unSubscribe()
+        }
     }, [user?.email])
 
     const logOut = () => {
-        setLoading(true);
-        return signOut(auth);
+        setLoading(true)
+        return signOut(auth)
     }
 
     const userUpdateProfile = (name, photo) => {
-        setLoading(true);
+        setLoading(true)
         return updateProfile(auth.currentUser, {
-          displayName: name,
-          photoURL: photo,
-        });
-      };
-
+            displayName: name,
+            photoURL: photo,
+        })
+    }
 
     const authInfo = {
         user,
@@ -86,14 +98,12 @@ const AuthProvider = ({children}) => {
         logOut,
         signInFacebook,
         signInWithGoogle,
-        userUpdateProfile
+        userUpdateProfile,
     }
 
     return (
-        <AuthContext.Provider value={authInfo}>
-            {children}
-        </AuthContext.Provider>
-    );
-};
+        <AuthContext.Provider value={ authInfo }>{ children }</AuthContext.Provider>
+    )
+}
 
-export default AuthProvider;
+export default AuthProvider

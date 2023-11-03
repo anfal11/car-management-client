@@ -6,21 +6,20 @@ import axios from "axios";
 
 const Bookings = () => {
   const [bookings, setBookings] = useState([]);
-
   const { user } = useContext(AuthContext);
-  const url = `http://localhost:5000/bookings?email=${user?.email}`;
+
   useEffect(() => {
-    axios.get(url, {withCredentials: true})
-    .then(res => {
-      setBookings(res.data)
-    })
-    // fetch(url, {credentials: 'include'})
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     console.log('Data from the server:', data);
-    //     setBookings(data);
-    //   })
-  }, [url]);
+    const url = `http://localhost:5000/bookings?email=${ user?.email }`;
+
+    axios.get(url, { withCredentials: true })
+      .then((res) => {
+        setBookings(res.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -33,56 +32,55 @@ const Bookings = () => {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/bookings/${id}`, {
+        fetch(`http://localhost:5000/bookings/${ id }`, {
           method: 'DELETE'
         })
-        .then(res => res.json())
-        .then(data => {
-          console.log(data);
-          if (data.deletedCount > 0) {
-            Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
-            const remainingBookings = bookings.filter(booking => booking._id !== id);
-            setBookings(remainingBookings);
-            console.log(remainingBookings);
-          }
-        });
+          .then(res => res.json())
+          .then(data => {
+            console.log(data);
+            if (data.deletedCount > 0) {
+              Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
+              const remainingBookings = bookings.filter(booking => booking._id !== id);
+              setBookings(remainingBookings);
+            }
+          });
       }
     });
   };
 
   const handleConfirm = (id) => {
-    fetch(`http://localhost:5000/bookings/${id}`, {
+    fetch(`http://localhost:5000/bookings/${ id }`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({status: 'confirmed'})
+      body: JSON.stringify({ status: 'confirmed' })
     })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data);
-      if (data.modifiedCount > 0) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Booking confirmed successfully',
-          showConfirmButton: false,
-          timer: 1500
-        });
-        const remainingBookings = bookings.filter(booking => booking._id !== id);
-        const updated = bookings.find(booking => booking._id === id);
-        updated.status = 'confirmed';
-        const newBookings = [...remainingBookings, updated];
-        setBookings(newBookings);
-      }
-    });
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        if (data.modifiedCount > 0) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Booking confirmed successfully',
+            showConfirmButton: false,
+            timer: 1500
+          });
+          const remainingBookings = bookings.filter(booking => booking._id !== id);
+          const updated = bookings.find(booking => booking._id === id);
+          updated.status = 'confirmed';
+          const newBookings = [...remainingBookings, updated];
+          setBookings(newBookings);
+        }
+      });
   }
 
   return (
     <div>
       <div className="overflow-x-auto">
-   
+
         <table className="table">
-          {/* head */}
+          {/* head */ }
           <thead>
             <tr>
               <th>
@@ -99,13 +97,13 @@ const Bookings = () => {
             </tr>
           </thead>
           <tbody>
-            {bookings.map((booking) => (
-              <BookingRow key={booking._id} handleDelete={handleDelete} booking={booking} handleConfirm={handleConfirm}></BookingRow>
-            ))}
+            { bookings.map((booking) => (
+              <BookingRow key={ booking._id } handleDelete={ handleDelete } booking={ booking } handleConfirm={ handleConfirm }></BookingRow>
+            )) }
           </tbody>
         </table>
-   
-    
+
+
       </div>
     </div>
   );
