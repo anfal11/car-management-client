@@ -8,9 +8,12 @@ const Services = () => {
     const {loading} = useContext(AuthContext);
     const [serVice, setServices] = useState([]);
     useEffect(() => {
-        fetch('http://localhost:5000/services')
+        fetch('https://car-management-server-nine.vercel.app/services')
         .then(res => res.json())
-        .then(data => setServices(data))
+        .then(data => {
+          console.log(data);
+          setServices(data)
+        })
     },[])
 
     return (

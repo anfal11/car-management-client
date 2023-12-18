@@ -30,7 +30,7 @@ const BookService = () => {
       };
       console.log(orderDetails);
 
-      fetch('http://localhost:5000/bookings', {
+      fetch('https://car-management-server-nine.vercel.app/bookings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

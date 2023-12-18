@@ -9,7 +9,7 @@ const Bookings = () => {
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    const url = `http://localhost:5000/bookings?email=${ user?.email }`;
+    const url = `https://car-management-server-nine.vercel.app/bookings?email=${ user?.email }`;
 
     axios.get(url, { withCredentials: true })
       .then((res) => {
@@ -18,7 +18,7 @@ const Bookings = () => {
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
-  }, []);
+  }, [user?.email]);
 
 
   const handleDelete = (id) => {
@@ -32,7 +32,7 @@ const Bookings = () => {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/bookings/${ id }`, {
+        fetch(`https://car-management-server-nine.vercel.app/bookings/${ id }`, {
           method: 'DELETE'
         })
           .then(res => res.json())
@@ -49,7 +49,7 @@ const Bookings = () => {
   };
 
   const handleConfirm = (id) => {
-    fetch(`http://localhost:5000/bookings/${ id }`, {
+    fetch(`https://car-management-server-nine.vercel.app/bookings/${ id }`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'

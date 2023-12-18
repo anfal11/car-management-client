@@ -19,7 +19,7 @@ const Login = () => {
               toast.success("User successfully logged in");
               navigate(location?.state ? location?.state : "/");
               // get access token Facebook
-        //       axios.post('http://localhost:5000/jwt', {accessToken} )
+        //       axios.post('https://car-management-server-nine.vercel.app/jwt', {accessToken} )
         // .then((res) => {
         //     console.log(res.data.accessToken);
         // })
@@ -37,7 +37,7 @@ const Login = () => {
         toast.success("User successfully logged in");
         navigate(location?.state ? location?.state : "/");
         // get access token google
-        // axios.post('http://localhost:5000/jwt', {idToken} )
+        // axios.post('https://car-management-server-nine.vercel.app/jwt', {idToken} )
         // .then((res) => {
         //     console.log(res.data.token);
         // })
@@ -64,7 +64,7 @@ const Login = () => {
         .then((res) => {
             toast.success("User successfully logged in");
             // get access token for mail
-            // axios.post('http://localhost:5000/jwt', data.email, {withCredentials: true})
+            // axios.post('https://car-management-server-nine.vercel.app/jwt', data.email, {withCredentials: true})
             // .then((res) => {
               // console.log(res.data);
             //     if(res.data.success){
