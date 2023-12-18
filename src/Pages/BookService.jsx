@@ -16,6 +16,13 @@ const BookService = () => {
       const date = form.get('date');
       const phone = form.get('phone');
       const email = user?.email;
+    
+      // const { name, date, phone, email } = Object.fromEntries(new FormData(e.target));
+
+      // const name = e.target.name.value;
+      // const date = e.target.date.value;
+      // const phone = e.target.phone.value;
+      // const email = user?.email
 
 
       const orderDetails = {
@@ -36,17 +43,16 @@ const BookService = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(orderDetails)
-      
       })
       .then(res => res.json())
         .then(data => {
             console.log(data)
-            if(data.insertedId){
+            if(data?.insertedId){
               toast.success('Your order placed successfully');
             }
         })
-
     }
+
     return (
         <div>
             {/* <h2>service_id = {service_id}</h2>
